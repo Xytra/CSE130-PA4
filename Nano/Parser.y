@@ -69,15 +69,20 @@ Top  : ID '=' Expr                 { $3 }
 
 Expr : TNUM                        { EInt $1 }
      | ID			   { EVar $1 }
+     | IDs			   { EVar $1 }
      | true			   { EBool True }
      | false			   { EBool False }
-     | let			   { ELet }
-     | '='			   { ( }
-     | in			   { ) }
-     | '\\'			   { ELam }
-     | '->'			   {}
+     | let ID IDs '=' Expr in Expr { ELet (mkLam [$2] $4) $6 }
+     | let ID '=' Expr in Expr     { ELet $2 $4 $6 }
+     --| let ID ID '=' Expr in Expr  { ELet $2 (ELam $3 $5) $7 }
+     --| let ID ID ID '=' Expr in Expr  { ELet $2 (ELam (ELam $3 $4) $6) $8 }
+     | '\\' ID '->' Expr	   { ELam $2 $4 }
+     | if Expr then Expr else Expr { EIf $2 $4 $6 }
 
-{
+IDs  : ID			   { [$1] }
+     | ID IDs			   { (:) [$1] [IDs $2] }
+{ 
+
 mkLam :: [Id] -> Expr -> Expr
 mkLam []     e = e
 mkLam (x:xs) e = ELam x (mkLam xs e)

@@ -36,8 +36,6 @@ tokens :-
   \,                            { \p _ -> COMMA  p }
   "True"			{ \p _ -> TRUE   p }
   "False"			{ \p _ -> FALSE  p }
-  $alpha[$alpha $digit]*	{ \p s -> ID p s   }
-  $digit+			{ \p s -> NUM p (read s)}
   "let"				{ \p _ -> LET    p }
   \=				{ \p _ -> EQB    p }
   "in"				{ \p _ -> IN     p }
@@ -46,6 +44,8 @@ tokens :-
   "if"				{ \p _ -> IF     p }
   "then"			{ \p _ -> THEN   p }
   "else"			{ \p _ -> ELSE   p }
+  $alpha[$alpha $digit]*	{ \p s -> ID p s   }
+  $digit+			{ \p s -> NUM p (read s)}
 
 
   -- DO NOT CHANGE ANYTHING AFTER THIS LINE ------------------------------------
